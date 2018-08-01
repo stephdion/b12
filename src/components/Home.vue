@@ -1,9 +1,17 @@
 <template>
   <v-container>
-    <v-layout row wrap>
+  <v-layout>
+    <v-flex xs12 class="text-xs-center">
 
-
-
+      <v-progress-circular
+          :size="150"
+          color="amber"
+          indeterminate
+          v-if="loading"
+        ></v-progress-circular>
+       </v-flex>
+  </v-layout>
+    <v-layout row wrap v-if="!loading">
       <v-carousel style="cursor: pointer" class="mb-2">
         <v-carousel-item v-for="pack in packs"
             @click.native="onLoadPack(pack.id)"
@@ -44,8 +52,10 @@
  export default {
     computed: {
       packs () {
-
         return this.$store.getters.loadedPacks
+      },
+      loading () {
+        return this.$store.getters.loading
       }
     },
    methods: {

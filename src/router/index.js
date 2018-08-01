@@ -7,6 +7,7 @@ import CreatePack from '@/components/Pack/CreatePack'
 import Profile from '@/components/User/Profile'
 import Signin from '@/components/User/Signin'
 import Signup from '@/components/User/Signup'
+import AuthGuard from './auth-guard'
 
 
 
@@ -22,23 +23,27 @@ export default new Router({
     {
       path: '/packslist',
       name: 'B12 pack list',
-      component: Pack
+      component: Pack,
+      beforeEnter: AuthGuard
     },
     {
       path: '/pack/:id',
       props: true,
       name: 'B12 pack detail',
-      component: PackDetail
+      component: PackDetail,
+      beforeEnter: AuthGuard
     },
     {
       path: '/packcreator',
       name: 'B12 pack creator',
-      component: CreatePack
+      component: CreatePack,
+      beforeEnter: AuthGuard
     },
     {
       path: '/profile',
       name: 'profile',
-      component: Profile
+      component: Profile,
+      beforeEnter: AuthGuard
     },
     {
       path: '/signup',

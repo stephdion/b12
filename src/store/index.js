@@ -41,6 +41,9 @@ export const store = new Vuex.Store({
       error: null
   },
   mutations: {
+    setLoadedPacks (state, payload) {
+        state.loadedPacks = payload
+    },
     createPack (state, payload) {
       state.loadedPacks.push(payload)
     },
@@ -58,6 +61,7 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
+
     signUserUp ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
@@ -102,15 +106,58 @@ export const store = new Vuex.Store({
           }
         )
     },
+    loadPacks ({commit}) {
+      commit('setLoading', true)
+      firebase.database().ref('packs').once('value')
+        .then((data) => {
+          const packs = []
+          const obj = data.val()
+          for (let key in obj) {
+            packs.push({
+              id: key,
+              title: obj[key].title,
+              description: obj[key].description,
+              imageUrl: obj[key].imageUrl,
+              date: obj[key].date
+
+            })
+          }
+          commit('setLoadedPacks', packs)
+          commit('setLoading', false)
+        })
+        .catch(
+          (error) => {
+            console.log(error)
+            commit('setLoading', false)
+          }
+        )
+    },
     createPack ({commit}, payload) {
       const pack = {
         title: payload.title,
         description: payload.description,
         imageUrl: payload.imageUrl,
-        date: payload.date,
-        id: "asfdasfsaf"
+        date: payload.date.toString()
       }
+      firebase.database().ref('packs').push(pack)
+        .then((data) => {
+          const key = data.key
+          commit('createPack', {
+            ...pack,
+            id: key
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+        })
       commit('createPack', pack)
+    },
+    autoSignIn ({commit}, payload) {
+      commit('setUser', {id: payload.uid, registeredPacks: []})
+    },
+    logout ({commit}) {
+      firebase.auth().signOut()
+      commit('setUser', null)
     },
     clearError ({commit}) {
       commit('clearError')

@@ -24,6 +24,14 @@
           </v-list-tile-content>
         </v-list-tile>
 
+ <v-list-tile
+          v-if="userIsAuthenticated"
+          v-on:click="onLogout()">
+          <v-list-tile-action>
+            <v-icon>exit_to_app</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>Logout</v-list-tile-content>
+        </v-list-tile>
       </v-list>
     </v-navigation-drawer>
   <v-toolbar dark class="primary">
@@ -33,7 +41,7 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer"
       class="hidden-sm-and-up"
       ></v-toolbar-side-icon>
-       <router-link to='/' tag="span" style="cursor: pointer"> Vitanimous B12 </router-link>
+       <router-link to='/' tag="span" style="cursor: pointer"> Evolvbox V2 </router-link>
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
@@ -48,6 +56,15 @@
       <v-icon left>{{ item.icon }}</v-icon>
     {{ item.title }}
       </v-btn>
+              <v-btn
+          v-if="userIsAuthenticated"
+          flat
+          @click="onLogout"
+          >
+          <v-icon left dark>exit_to_app</v-icon>
+          Logout
+
+        </v-btn>
 
          </v-toolbar-items>
 
@@ -86,6 +103,7 @@ export default {
            {icon: 'ballot', title: 'B12 pack list', link: '/packslist'},
             {icon: 'dashboard', title: 'B12 pack creator', link: '/packcreator'},
             {icon: 'person', title: 'Profile', link: '/profile'},
+
         ]
       }
       return menuItems
@@ -94,8 +112,14 @@ export default {
     userIsAuthenticated () {
       return this.$store.getters.user !== null && this.$store.getters.user !== undefined
     }
-
   },
+     methods: {
+      onLogout () {
+        this.$store.dispatch('logout')
+        this.$router.push('/signin')
+      }
+    },
+
   name: 'App'
 }
 </script>
